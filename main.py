@@ -47,13 +47,13 @@ def run(folder, im_width, im_height, channels):
 	data = load.rgb(folder, batch_size, im_width, im_height)
 
 	# inputs 
-	real_pokemon = tf.placeholder(tf.float32, shape = [None, im_height, im_width, channels])
+	real_images = tf.placeholder(tf.float32, shape = [None, im_height, im_width, channels])
 	noise = tf.placeholder(tf.float32, shape = [None, random_dim])
 
 	# computation
-	fake_pokemon = generator.generate(noise, random_dim)
-	real_prediction = discriminator.discriminate(real_pokemon, im_height, im_width)
-	fake_prediction = discriminator.discriminate(fake_pokemon, im_height, im_width, reuse = True)
+	fake_images = generator.generate(noise, random_dim)
+	real_prediction = discriminator.discriminate(real_images, im_height, im_width)
+	fake_prediction = discriminator.discriminate(fake_images, im_height, im_width, reuse = True)
 
 	# losses
 	d_loss = tf.reduce_mean(fake_prediction) - tf.reduce_mean(real_prediction)
@@ -83,7 +83,7 @@ def run(folder, im_width, im_height, channels):
 			# train batch
 			for batch_id in range(data.shape[0]):
 				d_loss_curr, g_loss_curr = sess.run([d_loss, g_loss], feed_dict = {
-					real_pokemon:data[batch_id],
+					real_images:data[batch_id],
 					noise: random_noise([batch_size, random_dim])
 					})
 
@@ -91,13 +91,13 @@ def run(folder, im_width, im_height, channels):
 					sess.run(g_optimize, feed_dict = {noise:random_noise([batch_size, random_dim])})
 				else:
 					sess.run(d_optimize, feed_dict = {
-						real_pokemon: data[batch_id],
+						real_images: data[batch_id],
 						noise: random_noise([batch_size, random_dim])
 						})
 
 			if epoch%10 == 0:
 				print('Discriminator Loss: ',d_loss_curr, '\nGenerator Loss: ', g_loss_curr)
-				samples = sess.run(fake_pokemon, feed_dict = {noise:random_noise([16, random_dim])})
+				samples = sess.run(fake_images, feed_dict = {noise:random_noise([16, random_dim])})
 				fig = plot(samples)
 				plt.savefig('out/'+str(epoch)+'.jpg')
 				plt.close()
