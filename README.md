@@ -7,7 +7,7 @@ The performance of the network seemed to be very sensitive to the hyper-paramete
 The use of xavier initializer and relu layer (non leaky) gave best results.
 
 ### Generated Samples
-<img src="https://github.com/OrionMonk/GAN_EMNIST/blob/master/train.gif" width="50%">
+<img src="https://github.com/mizimo/GAN_EMNIST/blob/master/train.gif" width="50%">
 
 *Fig. Samples generated during training*
 
